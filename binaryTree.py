@@ -158,6 +158,7 @@ class BinaryTree(object):
         if self.right:
             self.right._in_order(res)
 
+
     def filter(self, element):
         return -1
 

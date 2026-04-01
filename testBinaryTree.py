@@ -24,3 +24,5 @@ class TestBinaryTree(unittest.TestCase):
         tree.add(7)
         tree.add(5)
         self.assertEqual(tree.to_list(), [3, 5, 7])
+
+
