@@ -19,6 +19,7 @@ Our variant is to implement a binary search tree (BinaryTree) and its basic oper
 ## Contribution
 
 Lin Shengkai -- Implementation of add, remove, member, size, to_list and related internal methods
+
 Xia Jiale -- Finish the test_binary_tree.py.
 
 ## Changelog
