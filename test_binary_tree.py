@@ -1,7 +1,7 @@
 import pytest
 from hypothesis import given
 import hypothesis.strategies as st
-from src.binary_tree import BinaryTree
+from binary_tree import BinaryTree
 # Author: Daybreakxia
 
 # ---------- basic functions test ----------
