@@ -1,31 +1,63 @@
-# GROUP-NAME - lab 1 - variant 3
+# BST-lab1-variant3 - Binary Search Tree Implementation
 
-This is an educational project implementing a binary search tree.
+This project implements a binary search tree with core operations,
+advanced functions, and full unit tests.
 
-## Project structure
+## Project Structure
 
-- binaryTree.py -- Implementation of the BinaryTree class
-- binaryTree_test.py -- Unit tests for BinaryTree
+- binary_tree.py          Binary search tree implementation
+- test_binary_tree.py     Test cases for all tree operations
 
-## Implemented Features
+## Features
 
-- Add elements to the binary search tree
-- Remove elements from the tree
-- Check element existence
-- Get tree size
-- Convert tree to sorted list via in-order traversal
+### Core Methods
+- add: Insert an element
+- remove: Delete an element
+- member: Check existence
+- size: Get element count
+- to_list: Convert to sorted list
+- from_list: Build tree from list
 
-## Contribution
+### Advanced Methods
+- filter: Keep elements by condition
+- map: Transform all elements
+- reduce: Aggregate values
+- empty: Create empty tree
+- concat: Merge two trees
+- __iter__: Support iteration
 
-lsk -- Implementation of BST core methods
+## Contribution Log
 
-## Changelog
+### 31.03.2026 — Lin Shengkai
+- Implemented core methods:
+  - add
+  - remove
+  - member
+  - size
+  - to_list
+- Wrote related test cases
 
-- 08-04-2026 Initial implementation
-- 08-04-2026 Fix project structure and README format
+### 07.04.2026 — Xia Jiale
+- Implemented advanced methods:
+  - filter
+  - map
+  - reduce
+  - empty
+  - concat
+- Wrote related test cases
 
-## Design notes
+### 07.04.2026 — Lin Shengkai
+- Adjusted project structure
+- Fixed code style
+- Fixed README format
+- Passed all CI checks
 
-The tree maintains the binary search tree property:
-left child smaller, right child larger.
+## Design Notes
 
+This binary search tree maintains the BST property:
+- Left child is smaller
+- Right child is larger
+- Automatic duplicate removal
+- Supports None values
+- Full test coverage including property-based testing
+- 
