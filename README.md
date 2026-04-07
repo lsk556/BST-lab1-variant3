@@ -1,6 +1,7 @@
-# BST-lab1-variant3 - Binary Search Tree Implementation
+# BST-lab1-variant3
 
-This project implements a binary search tree with core operations, advanced functions, and full unit tests.
+This project implements a binary search tree with core operations,
+advanced functions, and full unit tests.
 
 ## Project Structure
 
@@ -47,6 +48,7 @@ This project implements a binary search tree with core operations, advanced func
 ## Design Notes
 
 This binary search tree maintains the BST property:
+
 - Left child is smaller
 - Right child is larger
 - Automatic duplicate removal
