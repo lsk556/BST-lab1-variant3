@@ -92,7 +92,7 @@ class _Node:
 
     def remove(self, element):
         """
-        remove the element. 
+        remove the element.
         Author: Daybreakxia
         """
         if self._lt(element, self.value):

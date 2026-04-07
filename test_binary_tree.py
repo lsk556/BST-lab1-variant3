@@ -145,7 +145,7 @@ def test_reduce():
     assert tree.reduce(lambda acc, x: acc * x, 1) == 24
 
     # Find Max
-    assert tree.reduce(lambda acc, x: acc if acc > x else x, -float('inf')) == 4
+    assert tree.reduce(lambda a, x: a if a > x else x, -float('inf')) == 4
 
     # Find size by reduce
     assert tree.reduce(lambda acc, _: acc + 1, 0) == tree.size()
@@ -241,7 +241,11 @@ def test_remove_removes_element(a, b):
 
 
 # Monoid group property test
-@given(st.lists(st.integers()), st.lists(st.integers()), st.lists(st.integers()))
+@given(
+    st.lists(st.integers()),
+    st.lists(st.integers()),
+    st.lists(st.integers())
+)
 def test_monoid_associativity(a, b, c):
     # emm, what we need test is this : (a ⊕ b) ⊕ c  == a ⊕ (b ⊕ c)
     def build_tree(lst):
@@ -254,7 +258,8 @@ def test_monoid_associativity(a, b, c):
     left.concat(build_tree(b))
     left.concat(build_tree(c))
 
-    # a ⊕ (b ⊕ c) second, and you can see we copy bc because concat will change it
+    # a ⊕ (b ⊕ c) second
+    # we copy bc because concat will change it
     bc = build_tree(b)
     bc.concat(build_tree(c))
     right = build_tree(a)
