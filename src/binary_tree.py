@@ -10,16 +10,26 @@ class _Node:
         self.left = None
         self.right = None
 
+    @staticmethod
+    def _lt(a, b):
+        # Custom less than comparator, in order to solve None.
+        if a is None and b is None:
+            return False
+        if a is None:
+            return True
+        if b is None:
+            return False
+        return a < b
+
     def add(self, element):
         """
         Insert an element into the BST, automatically avoid duplicates
         Author: linsk
         :param element: the element to be added into the tree
         """
-        if element is None: raise ValueError("None not allowed")
         if element == self.value:
             return self
-        elif element < self.value:
+        elif self._lt(element,self.value):
             if self.left is None:
                 self.left = _Node(element)
             else:
@@ -40,7 +50,7 @@ class _Node:
         """
         if element == self.value:
             return True
-        elif element < self.value:
+        elif self._lt(element, self.value):
             return self.left.member(element) if self.left else False
         else:
             return self.right.member(element) if self.right else False
@@ -85,10 +95,10 @@ class _Node:
         remove the element. 
         Author: Daybreakxia
         """
-        if element < self.value:
+        if self._lt(element, self.value):
             if self.left:
                 self.left = self.left.remove(element) # Iteration
-        elif element > self.value:
+        elif self._lt(self.value, element):
             if self.right:
                 self.right = self.right.remove(element)
         else:

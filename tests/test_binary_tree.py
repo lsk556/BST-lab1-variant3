@@ -15,7 +15,6 @@ from src.binary_tree import BinaryTree
 # 5. test_from_list()
 # 6. test_remove()
 
-
 def test_size():
     tree = BinaryTree()
     assert tree.size() == 0
@@ -257,3 +256,52 @@ def test_empty_identity(a):
     # empty ⊕ a == a
     empty.concat(tree)
     assert empty.to_list() == sorted(set(a))
+
+# ---------- Test None. ----------
+# add some tests for None.Now it is an element.It can be added or removed now.
+def test_none_handling():
+    tree = BinaryTree()
+    # add None
+    tree.add(None)
+    assert tree.size() == 1
+    assert tree.member(None) is True
+    assert tree.to_list() == [None]
+
+    # add None again
+    tree.add(None)
+    assert tree.size() == 1
+
+    # add None and integer
+    tree.add(5)
+    tree.add(3)
+    assert tree.size() == 3
+    assert tree.to_list() == [None, 3, 5]
+
+    # delete None
+    tree.remove(None)
+    assert tree.size() == 2
+    assert tree.member(None) is False
+    assert tree.to_list() == [3, 5]
+
+    # Delete None again
+    tree.remove(None)
+    assert tree.size() == 2
+
+    # Test to_list
+    tree.from_list([None, 1, None, 2])
+    assert tree.to_list() == [None, 1, 2]
+
+    # test filter
+    tree.from_list([None, 1, 2, 3])
+    tree.filter(lambda x: x is None or x > 1)
+    assert tree.to_list() == [None, 2, 3]
+
+    # test map
+    tree.from_list([1, 2, 3])
+    tree.map(lambda x: None if x == 2 else x)
+    assert tree.to_list() == [None, 1, 3]
+
+    # test reduce
+    tree.from_list([None, 2, 3])
+    total = tree.reduce(lambda acc, x: acc + (x if x is not None else 0), 0)
+    assert total == 5
