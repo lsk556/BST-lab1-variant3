@@ -2,6 +2,8 @@ import pytest
 from hypothesis import given
 import hypothesis.strategies as st
 from binary_tree import BinaryTree
+
+
 # Author: Daybreakxia
 
 # ---------- basic functions test ----------
@@ -24,6 +26,7 @@ def test_size():
     tree.add(7)
     assert tree.size() == 3
 
+
 def test_member():
     tree = BinaryTree()
     assert tree.member(5) is False
@@ -35,12 +38,14 @@ def test_member():
     assert tree.member(7) is True
     assert tree.member(9) is False
 
+
 def test_add_duplicate():
     tree = BinaryTree()
     tree.add(5)
     tree.add(5)
     assert tree.size() == 1
     assert tree.to_list() == [5]
+
 
 def test_to_list():
     tree = BinaryTree()
@@ -49,7 +54,8 @@ def test_to_list():
     assert tree.to_list() == [5]
     tree.add(3)
     tree.add(7)
-    assert tree.to_list() == [3, 5, 7]      # In order ascending
+    assert tree.to_list() == [3, 5, 7]  # In order ascending
+
 
 def test_from_list():
     test_data = [[], [5], [3, 5, 7], [7, 3, 5, 3]]
@@ -60,13 +66,14 @@ def test_from_list():
         expected = sorted(set(e))
         assert tree.to_list() == expected
 
+
 def test_remove():
     tree = BinaryTree()
-    tree.remove(5)                     # Test empty tree
+    tree.remove(5)  # Test empty tree
     assert tree.size() == 0
 
     tree.from_list([5, 3, 7, 2, 4, 6, 8])
-    #the tree is like this:
+    # the tree is like this:
     #       5
     #    3     7
     # 2   4   6   8
@@ -76,11 +83,11 @@ def test_remove():
     assert tree.member(2) is False
     assert tree.size() == 6
     # Delete a node with only one child node
-    tree.remove(3)                     # 3 has child node 4
+    tree.remove(3)  # 3 has child node 4
     assert tree.member(3) is False
     assert tree.member(4) is True
     # Delete a node with two child nodes
-    tree.remove(5)                     # root node
+    tree.remove(5)  # root node
     assert tree.member(5) is False
     assert tree.size() == 4
     # try delete a node that does not exist
@@ -99,15 +106,16 @@ def test_remove():
 
 def test_filter():
     tree = BinaryTree()
-    tree.filter(lambda x: x > 0)       # empty tree
+    tree.filter(lambda x: x > 0)  # empty tree
     assert tree.to_list() == []
 
     tree.from_list([1, 2, 3, 4, 5])
-    tree.filter(lambda x: x % 2 == 0)   # find the even number
+    tree.filter(lambda x: x % 2 == 0)  # find the even number
     assert tree.to_list() == [2, 4]
 
-    tree.filter(lambda x: x > 10)       # find the number > 10
+    tree.filter(lambda x: x > 10)  # find the number > 10
     assert tree.to_list() == []
+
 
 def test_map():
     tree = BinaryTree()
@@ -121,7 +129,8 @@ def test_map():
     # Mapping can lead to duplicates, it can remove them automatically
     tree.from_list([-2, -1, 1, 2])
     tree.map(abs)
-    assert tree.to_list() == [1, 2]     # only 1 and 2
+    assert tree.to_list() == [1, 2]  # only 1 and 2
+
 
 def test_reduce():
     tree = BinaryTree()
@@ -141,6 +150,7 @@ def test_reduce():
     # Find size by reduce
     assert tree.reduce(lambda acc, _: acc + 1, 0) == tree.size()
 
+
 def test_empty():
     tree1 = BinaryTree.empty()
     assert tree1.size() == 0
@@ -148,6 +158,7 @@ def test_empty():
     assert tree2.size() == 0
     # empty tree is same
     assert tree1.to_list() == tree2.to_list()
+
 
 def test_concat():
     tree1 = BinaryTree()
@@ -158,8 +169,9 @@ def test_concat():
     tree1.from_list([1, 2, 3])
     tree2.from_list([3, 4, 5])
     tree1.concat(tree2)
-    assert tree1.to_list() == [1, 2, 3, 4, 5]   # Deduplication after merging
-    assert tree2.to_list() == [3, 4, 5]         # tree2 did not change
+    assert tree1.to_list() == [1, 2, 3, 4, 5]  # Deduplication after merging
+    assert tree2.to_list() == [3, 4, 5]  # tree2 did not change
+
 
 def test_iter():
     x = [3, 1, 2, 4]
@@ -177,6 +189,7 @@ def test_iter():
     empty_tree = BinaryTree()
     with pytest.raises(StopIteration):
         next(iter(empty_tree))
+
 
 # ---------- Attribute-based testing (PBT) ----------
 # this is a test for the BinaryTree class
@@ -196,11 +209,13 @@ def test_from_list_to_list_roundtrip(a):
     # After converting a set to a list, it should be deduplicated and sorted.
     assert b == sorted(set(a))
 
+
 @given(st.lists(st.integers()))
 def test_size_equals_len_of_set(a):
     tree = BinaryTree()
     tree.from_list(a)
     assert tree.size() == len(set(a))
+
 
 @given(st.lists(st.integers()))
 def test_member_of_added_element(a):
@@ -209,6 +224,7 @@ def test_member_of_added_element(a):
         tree.add(elem)
     for elem in set(a):
         assert tree.member(elem) is True
+
 
 @given(st.lists(st.integers()), st.integers())
 def test_remove_removes_element(a, b):
@@ -223,6 +239,7 @@ def test_remove_removes_element(a, b):
     else:
         assert after == before
 
+
 # Monoid group property test
 @given(st.lists(st.integers()), st.lists(st.integers()), st.lists(st.integers()))
 def test_monoid_associativity(a, b, c):
@@ -234,7 +251,7 @@ def test_monoid_associativity(a, b, c):
 
     # (a ⊕ b) ⊕ c first
     left = build_tree(a)
-    left.concat(build_tree(b))  
+    left.concat(build_tree(b))
     left.concat(build_tree(c))
 
     # a ⊕ (b ⊕ c) second, and you can see we copy bc because concat will change it
@@ -244,6 +261,7 @@ def test_monoid_associativity(a, b, c):
     right.concat(bc)
 
     assert left.to_list() == right.to_list()
+
 
 @given(st.lists(st.integers()))
 def test_empty_identity(a):
@@ -256,6 +274,7 @@ def test_empty_identity(a):
     # empty ⊕ a == a
     empty.concat(tree)
     assert empty.to_list() == sorted(set(a))
+
 
 # ---------- Test None. ----------
 # add some tests for None.Now it is an element.It can be added or removed now.

@@ -29,7 +29,7 @@ class _Node:
         """
         if element == self.value:
             return self
-        elif self._lt(element,self.value):
+        elif self._lt(element, self.value):
             if self.left is None:
                 self.left = _Node(element)
             else:
@@ -40,7 +40,7 @@ class _Node:
             else:
                 self.right.add(element)
         return self
-    
+
     def member(self, element):
         """
         Check if the element exists in the BST
@@ -54,7 +54,7 @@ class _Node:
             return self.left.member(element) if self.left else False
         else:
             return self.right.member(element) if self.right else False
-        
+
     def size(self):
         """
         Calculate the total number of elements in the tree
@@ -67,7 +67,7 @@ class _Node:
         left_size = self.left.size() if self.left else 0
         right_size = self.right.size() if self.right else 0
         return 1 + left_size + right_size
-    
+
     def to_list(self):
         """
         Convert BST to a sorted list using in-order traversal
@@ -77,7 +77,7 @@ class _Node:
         result = []
         self._in_order(result)
         return result
-    
+
     def _in_order(self, result):
         """
         Internal helper for in-order traversal
@@ -97,13 +97,13 @@ class _Node:
         """
         if self._lt(element, self.value):
             if self.left:
-                self.left = self.left.remove(element) # Iteration
+                self.left = self.left.remove(element)  # Iteration
         elif self._lt(self.value, element):
             if self.right:
                 self.right = self.right.remove(element)
         else:
             if self.left is None:
-                return self.right # return the right subtree
+                return self.right  # return the right subtree
             elif self.right is None:
                 return self.left
             # so we need find successor
@@ -113,7 +113,8 @@ class _Node:
             self.value = successor.value
             self.right = self.right.remove(successor.value)
         return self
- 
+
+
 class BinaryTree:
     def __init__(self):
         self._root = None
@@ -159,7 +160,6 @@ class BinaryTree:
         for v in self.to_list():
             result = func(result, v)
         return result
-
 
     @classmethod
     def empty(cls):
