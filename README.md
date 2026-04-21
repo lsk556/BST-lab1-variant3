@@ -45,6 +45,12 @@ advanced functions, and full unit tests.
 - Fixed README format
 - Passed all CI checks
 
+### 21.04.2026 — Lin Shengkai
+
+- Refactored to static typing with generics
+- Implemented `__eq__` method for tree comparison
+- Fixed type annotations for mypy strict mode
+
 ## Design Notes
 
 This binary search tree maintains the BST property:
