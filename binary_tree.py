@@ -4,21 +4,12 @@ from typing import (
     TypeVar,
     Generic,
     Optional,
-    Protocol,
     Any,
     Callable,
     Iterator,
 )
 
-
-class _Comparable(Protocol):
-    """Protocol for types that support strict ordering."""
-
-    def __lt__(self, other: Any) -> bool:
-        ...
-
-
-T = TypeVar("T", bound=Optional[_Comparable])
+T = TypeVar("T")
 U = TypeVar("U")
 
 
@@ -30,41 +21,35 @@ class _Node(Generic[T]):
         self.left: Optional[_Node[T]] = None
         self.right: Optional[_Node[T]] = None
 
+    @staticmethod
+    def _lt(a: Any, b: Any) -> bool:
+        if a is None and b is None:
+            return False
+        if a is None:
+            return True
+        if b is None:
+            return False
+        result: bool = a < b
+        return result
+
     def add(self, element: T) -> None:
         if element == self.value:
             return
-
-        if element is None:
+        if self._lt(element, self.value):
             if self.left is None:
                 self.left = _Node(element)
             else:
                 self.left.add(element)
-        elif self.value is None:
+        else:
             if self.right is None:
                 self.right = _Node(element)
             else:
                 self.right.add(element)
-        else:
-            if element < self.value:
-                if self.left is None:
-                    self.left = _Node(element)
-                else:
-                    self.left.add(element)
-            else:
-                if self.right is None:
-                    self.right = _Node(element)
-                else:
-                    self.right.add(element)
 
     def member(self, element: T) -> bool:
         if element == self.value:
             return True
-
-        if element is None:
-            return self.left.member(element) if self.left else False
-        if self.value is None:
-            return self.right.member(element) if self.right else False
-        if element < self.value:
+        if self._lt(element, self.value):
             return self.left.member(element) if self.left else False
         return self.right.member(element) if self.right else False
 
@@ -98,16 +83,7 @@ class _Node(Generic[T]):
             self.right = self.right.remove(successor.value)
             return self
 
-        if element is None:
-            if self.left:
-                self.left = self.left.remove(element)
-            return self
-        if self.value is None:
-            if self.right:
-                self.right = self.right.remove(element)
-            return self
-
-        if element < self.value:
+        if self._lt(element, self.value):
             if self.left:
                 self.left = self.left.remove(element)
         else:
