@@ -9,16 +9,12 @@ class _Node(Generic[T]):
     __slots__ = ('value', 'left', 'right')
 
     def __init__(self, value: T) -> None:
-        """
-        Initialize an empty binary search tree node
-        Author: linsk
-        """
         self.value: T = value
         self.left: _Node[T] | None = None
         self.right: _Node[T] | None = None
 
     @staticmethod
-    def _lt(a: T, b: T) -> bool:
+    def _lt(a: object, b: object) -> bool:
         # Custom less than comparator, in order to solve None.
         if a is None and b is None:
             return False
@@ -29,11 +25,6 @@ class _Node(Generic[T]):
         return cast(bool, a < b)
 
     def add(self, element: T) -> _Node[T]:
-        """
-        Insert an element into the BST, automatically avoid duplicates
-        Author: linsk
-        :param element: the element to be added into the tree
-        """
         if element == self.value:
             return self
         elif self._lt(element, self.value):
@@ -49,12 +40,6 @@ class _Node(Generic[T]):
         return self
 
     def member(self, element: T) -> bool:
-        """
-        Check if the element exists in the BST
-        Author: linsk
-        :param element: the element to search
-        :return: True if exists, False otherwise
-        """
         if element == self.value:
             return True
         elif self._lt(element, self.value):
@@ -63,31 +48,16 @@ class _Node(Generic[T]):
             return self.right.member(element) if self.right else False
 
     def size(self) -> int:
-        """
-        Calculate the total number of elements in the tree
-        Author: linsk
-        :return: integer representing tree size
-        """
         left_size = self.left.size() if self.left else 0
         right_size = self.right.size() if self.right else 0
         return 1 + left_size + right_size
 
     def to_list(self) -> list[T]:
-        """
-        Convert BST to a sorted list using in-order traversal
-        Author: linsk
-        :return: sorted list of tree elements
-        """
         result: list[T] = []
         self._in_order(result)
         return result
 
     def _in_order(self, result: list[T]) -> None:
-        """
-        Internal helper for in-order traversal
-        Author: linsk
-        :param res: list to store traversal result
-        """
         if self.left:
             self.left._in_order(result)
         result.append(self.value)
@@ -95,22 +65,17 @@ class _Node(Generic[T]):
             self.right._in_order(result)
 
     def remove(self, element: T) -> _Node[T] | None:
-        """
-        remove the element.
-        Author: Daybreakxia
-        """
         if self._lt(element, self.value):
             if self.left:
-                self.left = self.left.remove(element)  # Iteration
+                self.left = self.left.remove(element)
         elif self._lt(self.value, element):
             if self.right:
                 self.right = self.right.remove(element)
         else:
             if self.left is None:
-                return self.right  # return the right subtree
+                return self.right
             elif self.right is None:
                 return self.left
-            # so we need find successor
             successor = self.right
             while successor.left:
                 successor = successor.left
@@ -180,7 +145,6 @@ class BinaryTree(Generic[T]):
         return "{" + ", ".join(str(v) for v in self.to_list()) + "}"
 
     def __eq__(self, other: object) -> bool:
-        """Compare two BinaryTrees by their elements (as sets)."""
         if not isinstance(other, BinaryTree):
             return NotImplemented
         return self.to_list() == other.to_list()

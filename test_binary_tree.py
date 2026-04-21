@@ -4,12 +4,8 @@ import hypothesis.strategies as st
 from binary_tree import BinaryTree
 
 
-# Author: Daybreakxia
-
-# ---------- basic functions test ----------
-
 def test_size() -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     assert tree.size() == 0
     tree.add(5)
     assert tree.size() == 1
@@ -19,7 +15,7 @@ def test_size() -> None:
 
 
 def test_member() -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     assert tree.member(5) is False
     tree.add(5)
     assert tree.member(5) is True
@@ -31,7 +27,7 @@ def test_member() -> None:
 
 
 def test_add_duplicate() -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.add(5)
     tree.add(5)
     assert tree.size() == 1
@@ -39,52 +35,46 @@ def test_add_duplicate() -> None:
 
 
 def test_to_list() -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     assert tree.to_list() == []
     tree.add(5)
     assert tree.to_list() == [5]
     tree.add(3)
     tree.add(7)
-    assert tree.to_list() == [3, 5, 7]  # In order ascending
+    assert tree.to_list() == [3, 5, 7]
 
 
 def test_from_list() -> None:
     test_data = [[], [5], [3, 5, 7], [7, 3, 5, 3]]
     for e in test_data:
-        tree = BinaryTree()
+        tree: BinaryTree[int] = BinaryTree()
         tree.from_list(e)
         expected = sorted(set(e))
         assert tree.to_list() == expected
 
 
 def test_remove() -> None:
-    tree = BinaryTree()
-    tree.remove(5)  # Test empty tree
+    tree: BinaryTree[int] = BinaryTree()
+    tree.remove(5)
     assert tree.size() == 0
 
     tree.from_list([5, 3, 7, 2, 4, 6, 8])
-    # Delete leaf node
     tree.remove(2)
     assert tree.member(2) is False
     assert tree.size() == 6
-    # Delete a node with only one child node
-    tree.remove(3)  # 3 has child node 4
+    tree.remove(3)
     assert tree.member(3) is False
     assert tree.member(4) is True
-    # Delete a node with two child nodes
-    tree.remove(5)  # root node
+    tree.remove(5)
     assert tree.member(5) is False
     assert tree.size() == 4
-    # try delete a node that does not exist
     tree.remove(100)
     assert tree.size() == 4
 
 
-# ---------- advanced functions test ----------
-
 def test_filter() -> None:
-    tree = BinaryTree()
-    tree.filter(lambda x: x > 0)  # empty tree
+    tree: BinaryTree[int] = BinaryTree()
+    tree.filter(lambda x: x > 0)
     assert tree.to_list() == []
 
     tree.from_list([1, 2, 3, 4, 5])
@@ -96,7 +86,7 @@ def test_filter() -> None:
 
 
 def test_map() -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.map(lambda x: x + 1)
     assert tree.to_list() == []
 
@@ -110,7 +100,7 @@ def test_map() -> None:
 
 
 def test_reduce() -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     assert tree.reduce(lambda acc, x: acc + x, 0) == 0
     assert tree.reduce(lambda acc, x: acc * x, 1) == 1
 
@@ -122,16 +112,16 @@ def test_reduce() -> None:
 
 
 def test_empty() -> None:
-    tree1 = BinaryTree.empty()
+    tree1: BinaryTree[int] = BinaryTree.empty()
     assert tree1.size() == 0
-    tree2 = BinaryTree()
+    tree2: BinaryTree[int] = BinaryTree()
     assert tree2.size() == 0
     assert tree1.to_list() == tree2.to_list()
 
 
 def test_concat() -> None:
-    tree1 = BinaryTree()
-    tree2 = BinaryTree()
+    tree1: BinaryTree[int] = BinaryTree()
+    tree2: BinaryTree[int] = BinaryTree()
     tree1.concat(tree2)
     assert tree1.size() == 0
 
@@ -144,7 +134,7 @@ def test_concat() -> None:
 
 def test_iter() -> None:
     x = [3, 1, 2, 4]
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.from_list(x)
     tmp: list[int] = []
     for elem in tree:
@@ -152,16 +142,14 @@ def test_iter() -> None:
     assert tmp == [1, 2, 3, 4]
     assert tree.to_list() == [1, 2, 3, 4]
 
-    empty_tree = BinaryTree()
+    empty_tree: BinaryTree[int] = BinaryTree()
     with pytest.raises(StopIteration):
         next(iter(empty_tree))
 
 
-# ---------- Property-Based Tests ----------
-
 @given(st.lists(st.integers()))
 def test_from_list_to_list_roundtrip(a: list[int]) -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.from_list(a)
     b = tree.to_list()
     assert b == sorted(set(a))
@@ -169,14 +157,14 @@ def test_from_list_to_list_roundtrip(a: list[int]) -> None:
 
 @given(st.lists(st.integers()))
 def test_size_equals_len_of_set(a: list[int]) -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.from_list(a)
     assert tree.size() == len(set(a))
 
 
 @given(st.lists(st.integers()))
 def test_member_of_added_element(a: list[int]) -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     for elem in a:
         tree.add(elem)
     for elem in set(a):
@@ -185,7 +173,7 @@ def test_member_of_added_element(a: list[int]) -> None:
 
 @given(st.lists(st.integers()), st.integers())
 def test_remove_removes_element(a: list[int], b: int) -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.from_list(a)
     before = tree.size()
     tree.remove(b)
@@ -208,7 +196,7 @@ def test_monoid_associativity(
     c: list[int],
 ) -> None:
     def build_tree(lst: list[int]) -> BinaryTree[int]:
-        t = BinaryTree()
+        t: BinaryTree[int] = BinaryTree()
         t.from_list(lst)
         return t
 
@@ -221,24 +209,21 @@ def test_monoid_associativity(
     right = build_tree(a)
     right.concat(bc)
 
-    # 使用 __eq__ 直接比较树对象
     assert left == right
 
 
 @given(st.lists(st.integers()))
 def test_empty_identity(a: list[int]) -> None:
-    tree = BinaryTree()
+    tree: BinaryTree[int] = BinaryTree()
     tree.from_list(a)
-    expected = BinaryTree()
+    expected: BinaryTree[int] = BinaryTree()
     expected.from_list(a)
-    empty = BinaryTree.empty()
+    empty: BinaryTree[int] = BinaryTree.empty()
     tree.concat(empty)
     assert tree == expected
     empty.concat(tree)
     assert empty == expected
 
-
-# ---------- Test None ----------
 
 def test_none_handling() -> None:
     tree: BinaryTree[int | None] = BinaryTree()
