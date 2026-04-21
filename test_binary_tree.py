@@ -1,3 +1,4 @@
+from typing import Optional
 import pytest
 from hypothesis import given
 import hypothesis.strategies as st
@@ -45,7 +46,7 @@ def test_to_list() -> None:
 
 
 def test_from_list() -> None:
-    test_data = [[], [5], [3, 5, 7], [7, 3, 5, 3]]
+    test_data: list[list[int]] = [[], [5], [3, 5, 7], [7, 3, 5, 3]]
     for e in test_data:
         tree: BinaryTree[int] = BinaryTree()
         tree.from_list(e)
@@ -62,12 +63,15 @@ def test_remove() -> None:
     tree.remove(2)
     assert tree.member(2) is False
     assert tree.size() == 6
+
     tree.remove(3)
     assert tree.member(3) is False
     assert tree.member(4) is True
+
     tree.remove(5)
     assert tree.member(5) is False
     assert tree.size() == 4
+
     tree.remove(100)
     assert tree.size() == 4
 
@@ -99,6 +103,13 @@ def test_map() -> None:
     assert tree.to_list() == [1, 2]
 
 
+def test_map_with_none() -> None:
+    tree: BinaryTree[Optional[int]] = BinaryTree()
+    tree.from_list([1, 2, 3])
+    tree.map(lambda x: None if x == 2 else x)
+    assert tree.to_list() == [None, 1, 3]
+
+
 def test_reduce() -> None:
     tree: BinaryTree[int] = BinaryTree()
     assert tree.reduce(lambda acc, x: acc + x, 0) == 0
@@ -107,7 +118,7 @@ def test_reduce() -> None:
     tree.from_list([1, 2, 3, 4])
     assert tree.reduce(lambda acc, x: acc + x, 0) == 10
     assert tree.reduce(lambda acc, x: acc * x, 1) == 24
-    assert tree.reduce(lambda a, x: a if a > x else x, -float('inf')) == 4
+    assert tree.reduce(lambda a, x: a if a > x else x, -float("inf")) == 4
     assert tree.reduce(lambda acc, _: acc + 1, 0) == tree.size()
 
 
@@ -136,7 +147,7 @@ def test_iter() -> None:
     x = [3, 1, 2, 4]
     tree: BinaryTree[int] = BinaryTree()
     tree.from_list(x)
-    tmp: list[int] = []
+    tmp = []
     for elem in tree:
         tmp.append(elem)
     assert tmp == [1, 2, 3, 4]
@@ -185,16 +196,8 @@ def test_remove_removes_element(a: list[int], b: int) -> None:
         assert after == before
 
 
-@given(
-    st.lists(st.integers()),
-    st.lists(st.integers()),
-    st.lists(st.integers())
-)
-def test_monoid_associativity(
-    a: list[int],
-    b: list[int],
-    c: list[int],
-) -> None:
+@given(st.lists(st.integers()), st.lists(st.integers()), st.lists(st.integers()))
+def test_monoid_associativity(a: list[int], b: list[int], c: list[int]) -> None:
     def build_tree(lst: list[int]) -> BinaryTree[int]:
         t: BinaryTree[int] = BinaryTree()
         t.from_list(lst)
@@ -216,18 +219,15 @@ def test_monoid_associativity(
 def test_empty_identity(a: list[int]) -> None:
     tree: BinaryTree[int] = BinaryTree()
     tree.from_list(a)
-    expected: BinaryTree[int] = BinaryTree()
-    expected.from_list(a)
     empty: BinaryTree[int] = BinaryTree.empty()
     tree.concat(empty)
-    assert tree == expected
+    assert tree == BinaryTree.from_list(a)  # type: ignore[call-arg]
     empty.concat(tree)
-    assert empty == expected
+    assert empty == BinaryTree.from_list(a)  # type: ignore[call-arg]
 
 
 def test_none_handling() -> None:
-    tree: BinaryTree[int | None] = BinaryTree()
-
+    tree: BinaryTree[Optional[int]] = BinaryTree()
     tree.add(None)
     assert tree.size() == 1
     assert tree.member(None) is True
@@ -252,18 +252,12 @@ def test_none_handling() -> None:
     tree.from_list([None, 1, None, 2])
     assert tree.to_list() == [None, 1, 2]
 
-    def _pred(x: int | None) -> bool:
-        return x is None or (x is not None and x > 1)
-
     tree.from_list([None, 1, 2, 3])
-    tree.filter(_pred)
+    tree.filter(lambda x: x is None or (x is not None and x > 1))
     assert tree.to_list() == [None, 2, 3]
 
-    def _mapper(x: int | None) -> int | None:
-        return None if x == 2 else x
-
     tree.from_list([1, 2, 3])
-    tree.map(_mapper)
+    tree.map(lambda x: None if x == 2 else x)
     assert tree.to_list() == [None, 1, 3]
 
     tree.from_list([None, 2, 3])
