@@ -8,6 +8,7 @@ class Comparable(Protocol):
     def __lt__(self, other: object) -> bool:
         ...
 
+
 T = TypeVar('T', bound=Comparable | None)
 U = TypeVar('U')
 
