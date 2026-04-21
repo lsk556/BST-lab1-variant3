@@ -196,8 +196,16 @@ def test_remove_removes_element(a: list[int], b: int) -> None:
         assert after == before
 
 
-@given(st.lists(st.integers()), st.lists(st.integers()), st.lists(st.integers()))
-def test_monoid_associativity(a: list[int], b: list[int], c: list[int]) -> None:
+@given(
+    st.lists(st.integers()),
+    st.lists(st.integers()),
+    st.lists(st.integers()),
+)
+def test_monoid_associativity(
+    a: list[int],
+    b: list[int],
+    c: list[int],
+) -> None:
     def build_tree(lst: list[int]) -> BinaryTree[int]:
         t: BinaryTree[int] = BinaryTree()
         t.from_list(lst)
