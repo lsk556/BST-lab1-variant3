@@ -1,17 +1,24 @@
-class _Node:
+from __future__ import annotations
+from typing import Callable, Generic, Iterable, Iterator, TypeVar, cast
+
+T = TypeVar('T')
+U = TypeVar('U')
+
+
+class _Node(Generic[T]):
     __slots__ = ('value', 'left', 'right')
 
-    def __init__(self, value):
+    def __init__(self, value: T) -> None:
         """
         Initialize an empty binary search tree node
         Author: linsk
         """
-        self.value = value
-        self.left = None
-        self.right = None
+        self.value: T = value
+        self.left: _Node[T] | None = None
+        self.right: _Node[T] | None = None
 
     @staticmethod
-    def _lt(a, b):
+    def _lt(a: T, b: T) -> bool:
         # Custom less than comparator, in order to solve None.
         if a is None and b is None:
             return False
@@ -19,9 +26,9 @@ class _Node:
             return True
         if b is None:
             return False
-        return a < b
+        return cast(bool, a < b)
 
-    def add(self, element):
+    def add(self, element: T) -> _Node[T]:
         """
         Insert an element into the BST, automatically avoid duplicates
         Author: linsk
@@ -41,7 +48,7 @@ class _Node:
                 self.right.add(element)
         return self
 
-    def member(self, element):
+    def member(self, element: T) -> bool:
         """
         Check if the element exists in the BST
         Author: linsk
@@ -55,30 +62,27 @@ class _Node:
         else:
             return self.right.member(element) if self.right else False
 
-    def size(self):
+    def size(self) -> int:
         """
         Calculate the total number of elements in the tree
         Author: linsk
         :return: integer representing tree size
         """
-        # left_size = 0
-        # if self.left is not None:
-        #     left_size = self.left.size()
         left_size = self.left.size() if self.left else 0
         right_size = self.right.size() if self.right else 0
         return 1 + left_size + right_size
 
-    def to_list(self):
+    def to_list(self) -> list[T]:
         """
         Convert BST to a sorted list using in-order traversal
         Author: linsk
         :return: sorted list of tree elements
         """
-        result = []
+        result: list[T] = []
         self._in_order(result)
         return result
 
-    def _in_order(self, result):
+    def _in_order(self, result: list[T]) -> None:
         """
         Internal helper for in-order traversal
         Author: linsk
@@ -90,7 +94,7 @@ class _Node:
         if self.right:
             self.right._in_order(result)
 
-    def remove(self, element):
+    def remove(self, element: T) -> _Node[T] | None:
         """
         remove the element.
         Author: Daybreakxia
@@ -115,62 +119,68 @@ class _Node:
         return self
 
 
-class BinaryTree:
-    def __init__(self):
-        self._root = None
+class BinaryTree(Generic[T]):
+    def __init__(self) -> None:
+        self._root: _Node[T] | None = None
 
-    def add(self, element):
+    def add(self, element: T) -> None:
         if self._root is None:
             self._root = _Node(element)
         else:
             self._root.add(element)
 
-    def member(self, element):
+    def member(self, element: T) -> bool:
         return self._root.member(element) if self._root else False
 
-    def size(self):
+    def size(self) -> int:
         return self._root.size() if self._root else 0
 
-    def remove(self, element):
+    def remove(self, element: T) -> None:
         if self._root:
             self._root = self._root.remove(element)
 
-    def _in_order(self, res):
+    def _in_order(self, res: list[T]) -> None:
         if self._root:
             self._root._in_order(res)
 
-    def to_list(self):
+    def to_list(self) -> list[T]:
         return self._root.to_list() if self._root else []
 
-    def from_list(self, lst):
+    def from_list(self, lst: Iterable[T]) -> None:
         self._root = None
         for elem in lst:
             self.add(elem)
 
-    def filter(self, predicate):
+    def filter(self, predicate: Callable[[T], bool]) -> None:
         kept = [v for v in self.to_list() if predicate(v)]
         self.from_list(kept)
 
-    def map(self, func):
+    def map(self, func: Callable[[T], T]) -> None:
         new_values = {func(v) for v in self.to_list()}
         self.from_list(new_values)
 
-    def reduce(self, func, initial):
+    def reduce(self, func: Callable[[U, T], U], initial: U) -> U:
         result = initial
         for v in self.to_list():
             result = func(result, v)
         return result
 
     @classmethod
-    def empty(cls):
+    def empty(cls) -> BinaryTree[T]:
         return cls()
 
-    def concat(self, other):
+    def concat(self, other: BinaryTree[T]) -> None:
         for elem in other.to_list():
             self.add(elem)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[T]:
         return iter(self.to_list())
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "{" + ", ".join(str(v) for v in self.to_list()) + "}"
+
+    def __eq__(self, other: object) -> bool:
+        """Compare two BinaryTrees by their elements (as sets)."""
+        if not isinstance(other, BinaryTree):
+            return NotImplemented
+        return self.to_list() == other.to_list()
