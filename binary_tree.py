@@ -5,6 +5,7 @@ from typing import (
     Generic,
     Optional,
     Protocol,
+    Any,
     Callable,
     Iterator,
 )
@@ -13,7 +14,7 @@ from typing import (
 class _Comparable(Protocol):
     """Protocol for types that support strict ordering."""
 
-    def __lt__(self, other: object) -> bool:
+    def __lt__(self, other: Any) -> bool:
         ...
 
 
