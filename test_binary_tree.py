@@ -5,6 +5,17 @@ import hypothesis.strategies as st
 from binary_tree import BinaryTree
 
 
+# ---------- basic functions test ----------
+# To test, the code is :
+# pytest tests/test_binary_tree.py -v
+# This basic test codes include:
+# 1. test_size()
+# 2. test_member()
+# 3. test_add_duplicate()
+# 4. test_to_list()
+# 5. test_from_list()
+# 6. test_remove()
+
 def test_size() -> None:
     tree: BinaryTree[int] = BinaryTree()
     assert tree.size() == 0
@@ -75,6 +86,15 @@ def test_remove() -> None:
     tree.remove(100)
     assert tree.size() == 4
 
+
+# ---------- advanced functions test ----------
+# so there are some advanced functions to test
+# 1. test_filter()
+# 2. test_map()
+# 3. test_reduce()
+# 4. test_empty()
+# 5. test_concat()
+# 6. test_iter()
 
 def test_filter() -> None:
     tree: BinaryTree[int] = BinaryTree()
@@ -158,6 +178,16 @@ def test_iter() -> None:
         next(iter(empty_tree))
 
 
+# ---------- Attribute-based testing (PBT) ----------
+# this is a test for the BinaryTree class
+# it include:
+# 1. test_from_list_to_list_roundtrip
+# 2. test_size_equals_len_of_set
+# 3. test_member_of_added_element
+# 4. test_remove_removes_element
+# 5. test_monoid_associativity
+# 6. test_empty_identity
+
 @given(st.lists(st.integers()))
 def test_from_list_to_list_roundtrip(a: list[int]) -> None:
     tree: BinaryTree[int] = BinaryTree()
@@ -233,6 +263,9 @@ def test_empty_identity(a: list[int]) -> None:
     empty.concat(tree)
     assert empty.to_list() == sorted(set(a))
 
+
+# ---------- Test None. ----------
+# add some tests for None.Now it is an element.It can be added or removed now.
 
 def test_none_handling() -> None:
     tree: BinaryTree[Optional[int]] = BinaryTree()

@@ -17,12 +17,14 @@ class _Node(Generic[T]):
     __slots__ = ("value", "left", "right")
 
     def __init__(self, value: T) -> None:
+        """Initialize an empty binary search tree node"""
         self.value: T = value
         self.left: Optional[_Node[T]] = None
         self.right: Optional[_Node[T]] = None
 
     @staticmethod
     def _lt(a: Any, b: Any) -> bool:
+        # Custom less than comparator, in order to solve None.
         if a is None and b is None:
             return False
         if a is None:
@@ -33,6 +35,7 @@ class _Node(Generic[T]):
         return result
 
     def add(self, element: T) -> None:
+        """Insert an element into the BST, automatically avoid duplicates"""
         if element == self.value:
             return
         if self._lt(element, self.value):
@@ -47,6 +50,7 @@ class _Node(Generic[T]):
                 self.right.add(element)
 
     def member(self, element: T) -> bool:
+        """Check if the element exists in the BST"""
         if element == self.value:
             return True
         if self._lt(element, self.value):
@@ -54,16 +58,19 @@ class _Node(Generic[T]):
         return self.right.member(element) if self.right else False
 
     def size(self) -> int:
+        """Calculate the total number of elements in the tree"""
         left_size = self.left.size() if self.left else 0
         right_size = self.right.size() if self.right else 0
         return 1 + left_size + right_size
 
     def to_list(self) -> list[T]:
+        """Convert BST to a sorted list using in-order traversal"""
         result: list[T] = []
         self._in_order(result)
         return result
 
     def _in_order(self, result: list[T]) -> None:
+        """Internal helper for in-order traversal"""
         if self.left:
             self.left._in_order(result)
         result.append(self.value)
@@ -71,6 +78,7 @@ class _Node(Generic[T]):
             self.right._in_order(result)
 
     def remove(self, element: T) -> Optional[_Node[T]]:
+        """remove the element."""
         if element == self.value:
             if self.left is None:
                 return self.right
