@@ -1,14 +1,12 @@
 from __future__ import annotations
+
 from typing import (
     TypeVar,
     Generic,
     Optional,
-    Protocol,
-    Any,
     Callable,
     Iterator,
 )
-
 
 T = TypeVar("T")
 U = TypeVar("U")
