@@ -4,11 +4,20 @@ from typing import (
     TypeVar,
     Generic,
     Optional,
+    Protocol,
     Callable,
     Iterator,
 )
 
-T = TypeVar("T")
+
+class _Comparable(Protocol):
+    """Protocol for types that support strict ordering."""
+
+    def __lt__(self, other: object) -> bool:
+        ...
+
+
+T = TypeVar("T", bound=Optional[_Comparable])
 U = TypeVar("U")
 
 
