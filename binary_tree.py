@@ -1,8 +1,15 @@
 from __future__ import annotations
-from typing import Callable, Generic, Iterable, Iterator, TypeVar, cast
+from typing import Callable, Generic, Iterable, Iterator, Protocol, TypeVar
 
 T = TypeVar('T')
 U = TypeVar('U')
+
+
+class Comparable(Protocol):
+    """Protocol for types that support less-than comparison."""
+
+    def __lt__(self, other: object) -> bool:
+        ...
 
 
 class _Node(Generic[T]):
@@ -14,15 +21,14 @@ class _Node(Generic[T]):
         self.right: _Node[T] | None = None
 
     @staticmethod
-    def _lt(a: object, b: object) -> bool:
-        # Custom less than comparator, in order to solve None.
+    def _lt(a: Comparable | None, b: Comparable | None) -> bool:
         if a is None and b is None:
             return False
         if a is None:
             return True
         if b is None:
             return False
-        return cast(bool, a < b)
+        return a < b
 
     def add(self, element: T) -> _Node[T]:
         if element == self.value:
