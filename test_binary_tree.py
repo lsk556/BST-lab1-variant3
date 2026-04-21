@@ -221,9 +221,9 @@ def test_empty_identity(a: list[int]) -> None:
     tree.from_list(a)
     empty: BinaryTree[int] = BinaryTree.empty()
     tree.concat(empty)
-    assert tree == BinaryTree.from_list(a)  # type: ignore[call-arg]
+    assert tree.to_list() == sorted(set(a))
     empty.concat(tree)
-    assert empty == BinaryTree.from_list(a)  # type: ignore[call-arg]
+    assert empty.to_list() == sorted(set(a))
 
 
 def test_none_handling() -> None:
