@@ -34,14 +34,36 @@ class _Node(Generic[T]):
         result: bool = a < b
         return result
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, _Node):
-            return NotImplemented
-        return (
-                self.value == other.value
-                and self.left == other.left
-                and self.right == other.right
-        )
+    def _eq_inorder(self, other: Optional[_Node[T]]) -> bool:
+        stack_self: list[_Node[T]] = []
+        stack_other: list[_Node[T]] = []
+        cur_self: Optional[_Node[T]] = self
+        cur_other: Optional[_Node[T]] = other
+
+        while cur_self or stack_self or cur_other or stack_other:
+            while cur_self:
+                stack_self.append(cur_self)
+                cur_self = cur_self.left
+            while cur_other:
+                stack_other.append(cur_other)
+                cur_other = cur_other.left
+
+            if bool(stack_self) != bool(stack_other):
+                return False
+
+            if not stack_self:
+                break
+
+            node_self = stack_self.pop()
+            node_other = stack_other.pop()
+
+            if node_self.value != node_other.value:
+                return False
+
+            cur_self = node_self.right
+            cur_other = node_other.right
+
+        return True
 
     def add(self, element: T) -> None:
         """Insert an element into the BST, automatically avoid duplicates"""
@@ -168,4 +190,8 @@ class BinaryTree(Generic[T]):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BinaryTree):
             return NotImplemented
-        return self._root == other._root
+        if self._root is None:
+            return other._root is None
+        if other._root is None:
+            return False
+        return self._root._eq_inorder(other._root)
