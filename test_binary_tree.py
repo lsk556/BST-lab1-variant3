@@ -22,6 +22,7 @@ def _build_tree(lst: list[int]) -> BinaryTree[int]:
 # 5. test_from_list()
 # 6. test_remove()
 
+
 def test_size() -> None:
     tree: BinaryTree[int] = BinaryTree()
     assert tree.size() == 0
