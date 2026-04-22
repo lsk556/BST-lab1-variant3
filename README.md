@@ -51,6 +51,12 @@ advanced functions, and full unit tests.
 - Implemented `__eq__` method for tree comparison
 - Fixed type annotations for mypy strict mode
 
+### 22.04.2026 — Lin Shengkai
+
+- Optimized `__eq__` method with efficient simultaneous in-order traversal
+- Refactored property-based tests to generate binary trees in `@given` arguments
+- Passed all CI checks
+
 ## Design Notes
 
 This binary search tree maintains the BST property:
