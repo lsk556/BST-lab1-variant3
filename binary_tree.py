@@ -34,6 +34,15 @@ class _Node(Generic[T]):
         result: bool = a < b
         return result
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, _Node):
+            return NotImplemented
+        return (
+                self.value == other.value
+                and self.left == other.left
+                and self.right == other.right
+        )
+
     def add(self, element: T) -> None:
         """Insert an element into the BST, automatically avoid duplicates"""
         if element == self.value:
@@ -159,7 +168,4 @@ class BinaryTree(Generic[T]):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, BinaryTree):
             return NotImplemented
-        return self.to_list() == other.to_list()
-
-    def __ne__(self, other: object) -> bool:
-        return not self.__eq__(other)
+        return self._root == other._root
