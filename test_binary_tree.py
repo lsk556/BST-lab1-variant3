@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 import pytest
 from hypothesis import given
 from hypothesis.strategies import composite, SearchStrategy
@@ -8,7 +8,7 @@ from binary_tree import BinaryTree
 
 @composite
 def btree(
-    draw,
+    draw: Any,
     elements: SearchStrategy[int] = st.integers(),
 ) -> BinaryTree[int]:
     """Hypothesis strategy that generates a BinaryTree[int] directly."""
