@@ -57,6 +57,11 @@ advanced functions, and full unit tests.
 - Refactored property-based tests to generate binary trees in `@given` arguments
 - Passed all CI checks
 
+### 29.04.2026 — Lin Shengkai
+
+- Defined `btree` Hypothesis strategy using `@composite` for direct generation
+- Fixed type annotations for `btree` to pass mypy strict mode
+
 ## Design Notes
 
 This binary search tree maintains the BST property:
