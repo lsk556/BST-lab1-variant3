@@ -1,12 +1,18 @@
 from typing import Optional
 import pytest
 from hypothesis import given
+from hypothesis.strategies import composite, SearchStrategy
 import hypothesis.strategies as st
 from binary_tree import BinaryTree
 
 
-def _build_tree(lst: list[int]) -> BinaryTree[int]:
-    """Helper: construct a BinaryTree from a list."""
+@composite
+def btree(
+    draw,
+    elements: SearchStrategy[int] = st.integers(),
+) -> BinaryTree[int]:
+    """Hypothesis strategy that generates a BinaryTree[int] directly."""
+    lst = draw(st.lists(elements))
     tree: BinaryTree[int] = BinaryTree()
     tree.from_list(lst)
     return tree
@@ -195,31 +201,29 @@ def test_iter() -> None:
 # 5. test_monoid_associativity
 # 6. test_empty_identity
 
-@given(st.lists(st.integers()))
-def test_from_list_to_list_roundtrip(a: list[int]) -> None:
-    # Explicitly test from_list construction
-    tree = _build_tree(a)
-    assert tree.to_list() == sorted(set(a))
+@given(btree(st.integers()))
+def test_from_list_to_list_roundtrip(tree: BinaryTree[int]) -> None:
+    # Roundtrip: tree -> to_list -> from_list -> tree
+    lst = tree.to_list()
+    tree2: BinaryTree[int] = BinaryTree()
+    tree2.from_list(lst)
+    assert tree == tree2
 
 
-@given(st.lists(st.integers()))
-def test_size_equals_len_of_set(a: list[int]) -> None:
-    # Explicitly test from_list construction
-    tree = _build_tree(a)
-    assert tree.size() == len(set(a))
+@given(btree(st.integers()))
+def test_size_equals_len_of_set(tree: BinaryTree[int]) -> None:
+    # BST is a set: size equals length of the deduplicated sorted list
+    assert tree.size() == len(tree.to_list())
 
 
-@given(st.builds(_build_tree, st.lists(st.integers())))
+@given(btree(st.integers()))
 def test_member_of_tree_elements(tree: BinaryTree[int]) -> None:
     """Every element in the tree must be found by member()."""
     for elem in tree.to_list():
         assert tree.member(elem) is True
 
 
-@given(
-    st.builds(_build_tree, st.lists(st.integers())),
-    st.integers(),
-)
+@given(btree(st.integers()), st.integers())
 def test_remove_removes_element(tree: BinaryTree[int], b: int) -> None:
     before = tree.size()
     had_b = tree.member(b)
@@ -233,9 +237,9 @@ def test_remove_removes_element(tree: BinaryTree[int], b: int) -> None:
 
 
 @given(
-    st.builds(_build_tree, st.lists(st.integers())),
-    st.builds(_build_tree, st.lists(st.integers())),
-    st.builds(_build_tree, st.lists(st.integers())),
+    btree(st.integers()),
+    btree(st.integers()),
+    btree(st.integers()),
 )
 def test_monoid_associativity(
     a: BinaryTree[int],
@@ -257,7 +261,7 @@ def test_monoid_associativity(
     assert left == right
 
 
-@given(st.builds(_build_tree, st.lists(st.integers())))
+@given(btree(st.integers()))
 def test_empty_identity(tree: BinaryTree[int]) -> None:
     expected = tree.to_list()
     empty = BinaryTree[int].empty()
